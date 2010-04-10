@@ -1,0 +1,11 @@
+
+
+TODO:
+   * Create CLI to
+    - manage cache refresh
+    - authorization
+    - sending love
+        i.e. ./bad_love.py [--refresh] --user=<username> --password=<password>
+   * create log-in behavior.
+
+   Q. break in to smaller components?
