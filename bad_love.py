@@ -14,7 +14,6 @@ def main():
 
     love = markov.generate_markov_text(7)
     to_email = people.get_random()
-    print people.people
     print to_email
     print love
     #send_love(to, love)

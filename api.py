@@ -44,9 +44,9 @@ class Lovemachine(object):
 
     def get_people(self):
         """get a set of people as email addresses"""
-        request = "q=%&limit=1000"
-        response = self.api.open('http://lovemachine.digg.com/getemails.php',
-                                data=request)
+        data = "?q=%&limit=1000"
+        response = self.api.open('http://lovemachine.digg.com/getemails.php%s'
+                                 % data)
         mailsrch = re.compile(r'[\w\-][\w\-\.]+@[\w\-][\w\-\.]+[a-zA-Z]{1,4}')
         emails = mailsrch.findall(response.read())
         return set(emails)
