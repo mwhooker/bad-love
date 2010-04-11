@@ -1,30 +1,23 @@
-import json
-import pprint
-import os
-from corpus import Corpus
+"""
+author: Matthew Hooker (mwhooker@gmail.com)
+"""
+from corpus import get_corpus
 from markov import Markov
-from url import opener
-import cPickle
-import random
-
-cache_path = 'cache/corpus.pkl'
-if not os.path.exists(cache_path):
-    corpus = Corpus()
-    with open(cache_path, 'w+') as file:
-        cPickle.Pickler(file).dump(corpus)
-else:
-    with open(cache_path, 'r') as file:
-        corpus = cPickle.Unpickler(file).load()
-markov = Markov(corpus.lines)
-
-def send_love(to, msg):
-    love_message = "to=%s&for1=%s&page=1&priv=0" % (to, msg)
-    response = opener.open('http://lovemachine.digg.com/sendlove.php', data=love_message)
-    print response.read()
+from people import People
+from api import get_handle
 
 
-love = markov.generate_markov_text()
-to = random.choice(list(corpus.people))
-print to
-print love
-#send_love(to, love)
+def main():
+    """set-up applcation and send love"""
+    markov = Markov(get_corpus())
+    people = People(get_handle())
+
+    love = markov.generate_markov_text(7)
+    to_email = people.get_random()
+    print people.people
+    print to_email
+    print love
+    #send_love(to, love)
+
+if __name__ == "__main__":
+    main()

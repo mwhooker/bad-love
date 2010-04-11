@@ -1,17 +1,16 @@
 import random
 
 class Markov(object):
-    def __init__(self, iterable_words):
+    def __init__(self, words):
         self.cache = {}
-        self.words_itr = iterable_words
-        self.words = self.file_to_words()
+        self.words = self.parse_list(words)
         self.word_size = len(self.words)
         self.database()
 
 
-    def file_to_words(self):
+    def parse_list(self, words):
         words = []
-        for line in self.words_itr:
+        for line in words:
             words.extend(line.lower().split())
 
         return words
