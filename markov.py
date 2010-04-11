@@ -1,4 +1,10 @@
 import random
+import logging
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
+
 
 class Markov(object):
     def __init__(self, words):
@@ -7,10 +13,9 @@ class Markov(object):
         self.word_size = len(self.words)
         self.database()
 
-
-    def parse_list(self, words):
+    def parse_list(self, word_list):
         words = []
-        for line in words:
+        for line in word_list:
             words.extend(line.lower().split())
 
         return words

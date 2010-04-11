@@ -3,8 +3,13 @@ author: Matthew Hooker (mwhooker@gmail.com)
 """
 import cPickle
 import os
+import logging
 from api import get_handle
 from collections import Iterable
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 
 
 def get_corpus():
@@ -32,6 +37,7 @@ class Corpus(Iterable):
 
     def _add_to_corpus(self, rows):
         """loop through rows and add each message to self.lines"""
+        log.info("found message %s" % rows[0])
         for line in rows:
             self.lines.append(line[5])
 

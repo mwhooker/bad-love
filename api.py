@@ -7,6 +7,8 @@ import logging
 import re
 
 log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 
 
 class Lovemachine(object):
@@ -46,7 +48,8 @@ class Lovemachine(object):
         response = self.api.open('http://lovemachine.digg.com/getemails.php',
                                 data=request)
         mailsrch = re.compile(r'[\w\-][\w\-\.]+@[\w\-][\w\-\.]+[a-zA-Z]{1,4}')
-        return set(mailsrch.findall(response.read()))
+        emails = mailsrch.findall(response.read())
+        return set(emails)
 
     def send_love(self, to_email, msg):
         """send love"""
