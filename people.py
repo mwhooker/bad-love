@@ -20,4 +20,9 @@ class People(object):
 
     def get_random(self):
         """get a random person"""
+        if not self.people:
+            self.find_people()
+
+        assert len(self.people) > 0
+
         return random.choice(self.people)

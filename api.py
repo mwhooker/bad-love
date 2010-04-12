@@ -13,7 +13,7 @@ log.addHandler(logging.StreamHandler())
 
 class Lovemachine(object):
     """handle to the lovemachine api"""
-    phpsessid = "PHPSESSID=4f1506664279b6a6de2e723b90e5c9ee"
+    phpsessid = "PHPSESSID=5e3bbf2ff9a580373de59ba4e8519e0d"
 
     def __init__(self):
         """initialize headers"""
@@ -45,8 +45,9 @@ class Lovemachine(object):
     def get_people(self):
         """get a set of people as email addresses"""
         data = "?q=%&limit=1000"
-        response = self.api.open('http://lovemachine.digg.com/getemails.php%s'
-                                 % data)
+        uri = 'http://lovemachine.digg.com/getemails.php%s' % data
+        log.info("finding people at %s" % uri)
+        response = self.api.open(uri)
         mailsrch = re.compile(r'[\w\-][\w\-\.]+@[\w\-][\w\-\.]+[a-zA-Z]{1,4}')
         emails = mailsrch.findall(response.read())
         return set(emails)
