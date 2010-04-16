@@ -14,7 +14,7 @@ def main():
     markov = Markov(get_corpus())
     people = People(api)
 
-    love = markov.generate_markov_text(random.randrange(7, 15))
+    love = markov.generate_markov_text(random.randrange(15, 20))
     to_email = people.get_random()
     print to_email
     print love

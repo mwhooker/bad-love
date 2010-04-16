@@ -1,5 +1,8 @@
 """
 author: Matthew Hooker (mwhooker@gmail.com)
+
+TODO:
+    use average message length for markov size
 """
 import cPickle
 import os
@@ -27,7 +30,9 @@ def get_corpus():
 
 
 class Corpus(Iterable):
-    """build corpus from lovemachine and act like a list"""
+    """build corpus froom lovemachine and act like a list"""
+
+    FROM_EMAIL="mhooker+markov@digg.com"
 
     def __init__(self, api_handle):
         """build the corpus on init"""
@@ -39,7 +44,8 @@ class Corpus(Iterable):
         """loop through rows and add each message to self.lines"""
         log.info("found message %s" % rows[0])
         for line in rows:
-            self.lines.append(line[5])
+            if line[1] is not self.FROM_EMAIL:
+                self.lines.append(line[5])
 
     def __iter__(self):
         return self.lines.__iter__()
