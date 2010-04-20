@@ -5,6 +5,7 @@ import urllib2
 import json
 import logging
 import re
+from BeautifulSoup import BeautifulSoup
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -36,17 +37,19 @@ class Lovemachine(object):
                 [...]]
         """
 
-        log.info("reading page %s" % page)
+        log.debug("reading page %s" % page)
         page_str = "page=%d" % page
         response = self.api.open('http://lovemachine.digg.com/gethistory.php',
                                data=page_str)
-        return json.loads(response.read())
+        soup = BeautifulSoup(response.read(),
+                             convertEntities=BeautifulSoup.ALL_ENTITIES)
+        return json.loads(soup.encode())
 
     def get_people(self):
         """get a set of people as email addresses"""
         data = "?q=%&limit=1000"
         uri = 'http://lovemachine.digg.com/getemails.php%s' % data
-        log.info("finding people at %s" % uri)
+        log.debug("finding people at %s" % uri)
         response = self.api.open(uri)
         mailsrch = re.compile(r'[\w\-][\w\-\.]+@[\w\-][\w\-\.]+[a-zA-Z]{1,4}')
         emails = mailsrch.findall(response.read())

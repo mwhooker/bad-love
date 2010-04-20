@@ -18,7 +18,7 @@ def main():
     to_email = people.get_random()
     print to_email
     print love
-    api.send_love(to_email, love)
+    #api.send_love(to_email, love)
 
 if __name__ == "__main__":
     main()

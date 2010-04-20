@@ -15,11 +15,18 @@ log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
 
 
+def cache_expired(path):
+    from time import time
+#TTL is 24 hours
+    TTL = 24 * 60 * 60 
+    mtime = os.stat(path).st_mtime
+    return (time() - mtime) > TTL
+
 def get_corpus():
     """get cached corpus object, or create new and cache"""
     cache_path = 'cache/corpus.pkl'
 #todo check if cache is older than x
-    if not os.path.exists(cache_path):
+    if not os.path.exists(cache_path) or cache_expired(cache_path):
         corpus = Corpus(get_handle())
         with open(cache_path, 'w+') as cache_file:
             cPickle.Pickler(cache_file, protocol=2).dump(corpus)
@@ -30,9 +37,12 @@ def get_corpus():
 
 
 class Corpus(Iterable):
-    """build corpus froom lovemachine and act like a list"""
+    """build corpus from lovemachine and act like a list"""
 
-    FROM_EMAIL="mhooker+markov@digg.com"
+    BLACKLIST_EMAILS=["mhooker+markov@digg.com",
+                      "mhooker@digg.com"]
+
+    CENSOR_WORDS = ['slut', 'bitch']
 
     def __init__(self, api_handle):
         """build the corpus on init"""
@@ -40,12 +50,17 @@ class Corpus(Iterable):
         self.api = api_handle
         self.build_corpus()
 
+    def _censor(self, string):
+        for cuss in self.CENSOR_WORDS:
+            string.replace(cuss, '')
+        return string
+
     def _add_to_corpus(self, rows):
         """loop through rows and add each message to self.lines"""
-        log.info("found message %s" % rows[0])
+        log.debug("found message %s" % rows[0])
         for line in rows:
-            if line[1] is not self.FROM_EMAIL:
-                self.lines.append(line[5])
+            if line[1] not in self.BLACKLIST_EMAILS:
+                self.lines.append(self._censor(line[5]))
 
     def __iter__(self):
         return self.lines.__iter__()
@@ -56,7 +71,7 @@ class Corpus(Iterable):
         page1 = self.api.get_page(1)
 
         max_pages = int(page1[0][1])
-        print "max pages: %d" % max_pages
+        log.debug("total pages: %d" % max_pages)
         self._add_to_corpus(page1[1:])
 
         for i in xrange(1, max_pages):
