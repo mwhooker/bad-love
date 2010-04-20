@@ -19,16 +19,14 @@ def cache_expired(path):
     from time import time
 #TTL is 24 hours
     TTL = 24 * 60 * 60 
-    mtime = os.stat(path).st_mtime
-    return (time() - mtime) > TTL
+    return (time() - os.path.getmtime(path)) > TTL
 
 def get_corpus():
     """get cached corpus object, or create new and cache"""
-    cache_path = 'cache/corpus.pkl'
-#todo check if cache is older than x
+    cache_path = os.path.join(os.path.dirname(__file__), 'cache', 'corpus.pkl')
     if not os.path.exists(cache_path) or cache_expired(cache_path):
         corpus = Corpus(get_handle())
-        cache_file =  open(cache_path, 'w+') 
+        cache_file = open(cache_path, 'w+')
         cPickle.Pickler(cache_file, protocol=2).dump(corpus)
     else:
         cache_file =  open(cache_path, 'r')
