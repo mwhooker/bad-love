@@ -8,7 +8,7 @@ import cPickle
 import os
 import logging
 from api import get_handle
-from collections import Iterable
+#from collections import Iterable
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -28,15 +28,16 @@ def get_corpus():
 #todo check if cache is older than x
     if not os.path.exists(cache_path) or cache_expired(cache_path):
         corpus = Corpus(get_handle())
-        with open(cache_path, 'w+') as cache_file:
-            cPickle.Pickler(cache_file, protocol=2).dump(corpus)
+        cache_file =  open(cache_path, 'w+') 
+        cPickle.Pickler(cache_file, protocol=2).dump(corpus)
     else:
-        with open(cache_path, 'r') as cache_file:
-            corpus = cPickle.Unpickler(cache_file).load()
+        cache_file =  open(cache_path, 'r')
+        corpus = cPickle.Unpickler(cache_file).load()
+    cache_file.close()
     return corpus
 
 
-class Corpus(Iterable):
+class Corpus(object):
     """build corpus from lovemachine and act like a list"""
 
     BLACKLIST_EMAILS=["mhooker+markov@digg.com",

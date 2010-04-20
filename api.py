@@ -2,10 +2,13 @@
 author: Matthew Hooker (mwhooker@gmail.com)
 """
 import urllib2
-import json
 import logging
 import re
 from BeautifulSoup import BeautifulSoup
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -43,7 +46,7 @@ class Lovemachine(object):
                                data=page_str)
         soup = BeautifulSoup(response.read(),
                              convertEntities=BeautifulSoup.ALL_ENTITIES)
-        return json.loads(soup.encode())
+        return json.loads(str(soup))
 
     def get_people(self):
         """get a set of people as email addresses"""
