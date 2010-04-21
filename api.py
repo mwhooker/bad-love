@@ -63,7 +63,10 @@ class Lovemachine(object):
         love_message = "to=%s&for1=%s&page=1&priv=0" % (to_email, msg)
         response = self.api.open('http://lovemachine.digg.com/sendlove.php',
                                  data=love_message)
-        return json.loads(response.read()) == u'ok'
+        message = json.loads(response.read())
+        log.debug(response.code)
+        log.debug(message)
+        return message == u'ok'
 
 
 def get_handle():
